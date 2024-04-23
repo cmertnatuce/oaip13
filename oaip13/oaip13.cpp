@@ -30,43 +30,32 @@ void enter(Detail& detail) {
     cin >> detail.weight;
 }
 
-// Функция для сортировки массива деталей по стоимости 
-void sort(Detail results[], int numResults) {
-    for (int i = 0; i < numResults - 1; ++i) {
-        for (int j = 0; j < numResults - i - 1; ++j) {
-            if (results[j].cost > results[j + 1].cost) {
-                // Обмен местами
-                Detail temp = results[j];
-                results[j] = results[j + 1];
-                results[j + 1] = temp;
-            }
-        }
-    }
-}
-
-// Функция для вывода массива деталей в виде таблицы
-void print(Detail results[], int numResults) {
-    if (numResults > 0) {
+void print(queue<Detail> detailsQueue) {
+    if (!detailsQueue.empty()) {
         cout << "----------------------------------------------------------------------------------------------------------\n";
         cout << setw(20) << "Название детали" << setw(20) << "Стоимость" << setw(20) << "Размер" << setw(20) << "Вес" << endl;
         cout << "----------------------------------------------------------------------------------------------------------\n";
-        for (int i = 0; i < numResults; ++i) {
-            cout << setw(20) << results[i].name << setw(20) << results[i].cost << setw(20) << results[i].size << setw(20) << results[i].weight << endl;
+        while (!detailsQueue.empty()) {
+            Detail detail = detailsQueue.front();
+            cout << setw(20) << detail.name << setw(20) << detail.cost << setw(20) << detail.size << setw(20) << detail.weight << endl;
+            detailsQueue.pop();
         }
         cout << "----------------------------------------------------------------------------------------------------------\n";
     }
     else {
-        cout << "\nНет информации о деталях для вывода.\n";
+        cout << "\nОчередь деталей пуста.\n";
     }
 }
+    
 
 // Функция для сохранения информации о деталях в файл
 void save(Detail results[], int numResults) {
     if (numResults > 0) {
         ofstream outFile("details.txt");
         if (outFile.is_open()) {
+            outFile << "Название детали" << setw(20) << "Стоимость" << setw(20) << "Размер" << setw(20) << "Вес" << endl;
             for (int i = 0; i < numResults; ++i) {
-                outFile << "Название детали: " << results[i].name << "\nСтоимость детали: " << results[i].cost << "\nРазмер детали: " << results[i].size << "\nВес детали: " << results[i].weight << endl;
+                outFile << results[i].name << setw(20) << results[i].cost << setw(20) << results[i].size << setw(20) << results[i].weight << endl;
             }
             outFile.close();
             cout << "Информация о деталях сохранена в файле 'details.txt'.\n";
@@ -79,6 +68,7 @@ void save(Detail results[], int numResults) {
         cout << "Нет информации о деталях для сохранения.\n";
     }
 }
+
 
 int main() {
     SetConsoleOutputCP(1251);
@@ -110,22 +100,13 @@ int main() {
                 cout << "Очередь деталей заполнена.\n";
             }
             break;
-case 2:
-    if (!detailsQueue.empty()) {
-        // Создаем временный массив для хранения деталей из очереди
-        Detail tempArray[MAX];
-        int numDetails = 0;
-        while (!detailsQueue.empty()) {
-            tempArray[numDetails++] = detailsQueue.front();
-            detailsQueue.pop();
-        }
-        // Выводим информацию о деталях из временного массива в виде таблицы
-        print(tempArray, numDetails);
-    }
-    else {
-        cout << "Очередь деталей пуста.\n";
-    }
-    break;
+        case 2:
+            if (!detailsQueue.empty()) {
+                print(detailsQueue);
+            }
+            else {
+                cout << "Очередь деталей пуста.\n";
+            }
             break;
         case 3:
             if (!detailsQueue.empty()) {
